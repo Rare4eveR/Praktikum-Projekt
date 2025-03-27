@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      - OLLAMA_API=http://ollama:11434
+      - DEFAULT_MODEL=mistral
+    networks:
+      - ki-network
+    depends_on:
+      - ollama
+    restart: unless-stopped
+
+  frontend:
+    image: nginx:latest
+    volumes:
+      - ./frontend:/usr/share/nginx/html
+    ports:
+      - "80:80"
+    networks:
+      - ki-network
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama:latest
+    volumes:
+      - ollama-data:/root/.ollama
+    ports:
+      - "11434:11434"
+    # GPUs einbinden (falls vorhanden)
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    networks:
+      - ki-network
+    restart: unless-stopped
+
+networks:
+  ki-network:
+    driver: bridge
+
+volumes:
+  ollama-data:

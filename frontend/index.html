@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KI-Webanwendung</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+    <script src="https://unpkg.com/marked@5.0.2/marked.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>KI-Webanwendung</h1>
+            <select id="model-select" class="model-select">
+                <option value="mistral">Mistral</option>
+                <!-- Wird dynamisch mit verfügbaren Modellen gefüllt -->
+            </select>
+        </header>
+        
+        <div class="chat-container">
+            <div id="chat-messages" class="chat-messages">
+                <!-- Hier werden die Nachrichten angezeigt -->
+                <div class="message system">
+                    Willkommen! Wie kann ich dir heute helfen?
+                </div>
+            </div>
+            
+            <form id="chat-form" class="chat-input-form">
+                <textarea 
+                    id="prompt-input" 
+                    name="prompt" 
+                    placeholder="Stell mir eine Frage..."
+                    rows="2"
+                    required
+                ></textarea>
+                <button 
+                    type="submit"
+                    id="send-button"
+                    hx-post="/api/chat"
+                    hx-trigger="click"
+                    hx-target="#chat-messages"
+                    hx-swap="beforeend"
+                    hx-indicator="#loading"
+                >Senden</button>
+            </form>
+            
+            <div id="loading" class="htmx-indicator">
+                Denke nach...
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
